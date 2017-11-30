@@ -8,7 +8,14 @@ app.use(bodyParser.urlencoded({extended: true}));
 var campgrounds = [
 	{name: "Salmon Creek", image: "https://farm5.staticflickr.com/4420/37403014592_c5f5d37906.jpg"},
 	{name: "Salt Fork", image:"https://farm5.staticflickr.com/4123/4943676109_b93d9c1203.jpg"},
+	{name: "Cantwell Cliffs", image: "https://farm4.staticflickr.com/3189/3062178880_4edc3b60d5.jpg"},
+	{name: "Salmon Creek", image: "https://farm5.staticflickr.com/4420/37403014592_c5f5d37906.jpg"},
+	{name: "Salt Fork", image:"https://farm5.staticflickr.com/4123/4943676109_b93d9c1203.jpg"},
+	{name: "Cantwell Cliffs", image: "https://farm4.staticflickr.com/3189/3062178880_4edc3b60d5.jpg"},
+	{name: "Salmon Creek", image: "https://farm5.staticflickr.com/4420/37403014592_c5f5d37906.jpg"},
+	{name: "Salt Fork", image:"https://farm5.staticflickr.com/4123/4943676109_b93d9c1203.jpg"},
 	{name: "Cantwell Cliffs", image: "https://farm4.staticflickr.com/3189/3062178880_4edc3b60d5.jpg"}
+
 ]
 app.get("/", function(req, res){
 	res.render("landing");
