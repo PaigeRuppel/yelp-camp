@@ -12,6 +12,7 @@ mongoose.connect("mongodb://localhost/yelp_camp", {useMongoClient:true});
 app.set("view engine", "ejs");
 seedDB();
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(express.static(__dirname + "/public"));
 
 app.get("/", function(req, res){
 	res.render("landing");
