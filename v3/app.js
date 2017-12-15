@@ -1,10 +1,13 @@
-var express    = require("express"),
-		app        = express(),
-		bodyParser = require("body-parser"),
-		mongoose   = require("mongoose"),
-		seedDB		 = require("./seeds"),
-		Campground = require("./models/campground");
-		Comment    = require("./models/comment");
+var LocalStrategy = require("passport-local"),
+		Campground 		= require("./models/campground");
+		Comment    		= require("./models/comment");
+		User					= require("./models/user"),
+		seedDB		 		= require("./seeds"),
+		express    		= require("express"),
+		app        		= express(),
+		bodyParser 		= require("body-parser"),
+		mongoose   		= require("mongoose"),
+		passport 	 		= require("passport"),
 
 
 mongoose.Promise = global.Promise;
@@ -13,6 +16,47 @@ app.set("view engine", "ejs");
 seedDB();
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(__dirname + "/public"));
+
+
+//===================================================
+//PASSPORT CONFIG
+//===================================================
+
+app.use(require("express-session")({
+	secret: "Fern is a crazy raccoon cat",
+	resave: false,
+	saveUninitialized: false
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+//==============================================================
+//MIDDLEWARE
+//==============================================================
+//makes user accessible for whole application
+app.use(function(req, res, next) {
+	res.locals.currentUser = req.user;
+	next();
+});
+
+//way to authenticate logged in status
+function isLoggedIn(req, res, next) {
+	if(req.isAuthenticated()) {
+		return next();
+	} 
+	res.redirect("/login");
+}
+
+//==============================================================
+
+//===================================================
+//RESTFUL ROUTES
+//===================================================
+
 
 app.get("/", function(req, res){
 	res.render("landing");
@@ -55,23 +99,23 @@ app.get("/campgrounds/new", function(req, res) {
 
 //SHOW - shows more info about one campground
 app.get("/campgrounds/:id", function(req, res){
-//find the campground with provided ID
 	Campground.findById(req.params.id).populate("comments").exec(function(err, foundCampground){
 		if(err) {
 			console.log(err);
 		} else {
-//render show template with that campground
+
 			res.render("campgrounds/show", {campground: foundCampground});
 		}
 	});
 });
 
 
-//====================================
+//=================================================================
 // COMMENTS ROUTES
-//====================================
+//=================================================================
 
-app.get("/campgrounds/:id/comments/new", function(req, res) {
+//form hidden from user not logged in
+app.get("/campgrounds/:id/comments/new", isLoggedIn, function(req, res) {
 	Campground.findById(req.params.id, function(err, campground) {
 		if(err) {
 			console.log(err);
@@ -81,7 +125,8 @@ app.get("/campgrounds/:id/comments/new", function(req, res) {
 	});
 });
 
-app.post("/campgrounds/:id/comments", function(req, res) {
+//post route hidden from user not logged in
+app.post("/campgrounds/:id/comments", isLoggedIn, function(req, res) {
 	Campground.findById(req.params.id, function(err, campground) {
 		if (err) {
 			console.log(err);
@@ -100,6 +145,53 @@ app.post("/campgrounds/:id/comments", function(req, res) {
 		}
 	});
 });
+
+//=================================================================
+//AUTHENTICATION ROUTES
+//=================================================================
+
+//Show register form
+app.get("/register", function(req, res) {
+	res.render("register");
+});
+
+//Handle sign up logic
+app.post("/register", function(req, res){
+	var newUser = new User({username: req.body.username});
+	User.register(newUser, req.body.password, function(err, user){
+		if(err) {
+			console.log(err);
+			return res.render("/register");
+		} 
+		passport.authenticate("local")(req, res, function(){
+			res.redirect("/campgrounds");
+		});
+	});
+});
+
+//Show login form
+app.get("/login", function(req, res){
+	res.render("login");
+});
+
+//Handle login logic
+app.post("/login", passport.authenticate("local", 
+	{
+		successRedirect: "/campgrounds",
+		failureRedirect: "/login"
+	}), function(req, res) {
+});
+
+//Logout route
+app.get("/logout", function(req, res){
+	req.logout();
+	res.redirect("/campgrounds");
+});
+
+
+
+
+//==============================================================
 
 app.listen(4000, function() {
 	(console.log("The YelpCamp Server has started on port 4000"));
