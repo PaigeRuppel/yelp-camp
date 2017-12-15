@@ -4,7 +4,7 @@ var router = express.Router();
 var Campground = require("../models/campground");
 
 //==============================================================
-//CAMPGROUND ROUTES
+//ROUTES
 //==============================================================
 
 

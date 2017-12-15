@@ -1,5 +1,5 @@
 var express = require("express");
-var router = express.Router();
+var router = express.Router({mergeParams: true});
 var Campground = require("../models/campground");
 var Comment = require("../models/comment");
 
@@ -14,9 +14,10 @@ function isLoggedIn(req, res, next) {
 
 
 //=================================================================
-// COMMENTS ROUTES
+// ROUTES
 //=================================================================
 
+//ADD NEW COMMENT
 //form hidden from user not logged in
 router.get("/new", isLoggedIn, function(req, res) {
 	Campground.findById(req.params.id, function(err, campground) {
@@ -28,6 +29,7 @@ router.get("/new", isLoggedIn, function(req, res) {
 	});
 });
 
+//SAVE NEW COMMENT
 //post route hidden from user not logged in
 router.post("/", isLoggedIn, function(req, res) {
 	Campground.findById(req.params.id, function(err, campground) {
