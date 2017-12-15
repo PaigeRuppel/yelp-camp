@@ -32,7 +32,7 @@ function seedDB() {
 			Campground.create(seed, function(err, campground){
 				if(err) {
 					console.log(err);
-				} else {
+				} else {	
 					console.log("added a campground");
 					//create a comment
 					Comment.create(
