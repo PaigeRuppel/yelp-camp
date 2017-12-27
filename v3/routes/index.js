@@ -1,19 +1,12 @@
 var express 	= require("express"),
- 		router 		= express.Router()
+ 		router 		= express.Router(),
  		passport 	= require("passport");
 
 
-var Campground = require("../models/campground");
- 		Comment 	 = require("../models/comment");
+var Campground = require("../models/campground"),
+ 		Comment 	 = require("../models/comment"),
  		User 			 = require("../models/user");
 
-//==================================================================
-function isLoggedIn(req, res, next) {
-	if(req.isAuthenticated()) {
-		return next();
-	} 
-	res.redirect("/login");
-}
 
 //==================================================================
 //ROOT ROUTE
