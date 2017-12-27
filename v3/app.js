@@ -1,13 +1,14 @@
-var LocalStrategy = require("passport-local"),
-		Campground 		= require("./models/campground");
-		Comment    		= require("./models/comment");
-		User					= require("./models/user"),
-		seedDB		 		= require("./seeds"),
-		express    		= require("express"),
-		app        		= express(),
-		bodyParser 		= require("body-parser"),
-		mongoose   		= require("mongoose"),
-		passport 	 		= require("passport");
+var LocalStrategy  = require("passport-local"),
+		Campground 		 = require("./models/campground");
+		Comment    		 = require("./models/comment");
+		User					 = require("./models/user"),
+		seedDB		 		 = require("./seeds"),
+		express    		 = require("express"),
+		app        		 = express(),
+		bodyParser 		 = require("body-parser"),
+		mongoose   		 = require("mongoose"),
+		passport 	 		 = require("passport"),
+		methodOverride = require("method-override");
 
 
 var commentRoutes 	 = require("./routes/comments"),
@@ -23,6 +24,7 @@ seedDB(); // Seed the Database
 
 app.use(bodyParser.urlencoded({extended: true})); 
 app.use(express.static(__dirname + "/public"));
+app.use(methodOverride("_method"));
 
 
 //===================================================
@@ -44,7 +46,7 @@ passport.deserializeUser(User.deserializeUser());
 //==============================================================
 //MIDDLEWARE
 //==============================================================
-//makes user accessible for whole application
+
 app.use(function(req, res, next) {
 	res.locals.currentUser = req.user;
 	next();
