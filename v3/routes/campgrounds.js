@@ -13,6 +13,25 @@ function isLoggedIn(req, res, next) {
 	res.redirect("/login");
 }
 
+function isCampgroundOwner(req, res, next) {
+	 if(req.isAuthenticated()){
+        Campground.findById(req.params.id, function(err, foundCampground){
+           if(err){
+               res.redirect("back");
+           }  else {
+               // does user own the campground?
+            if(foundCampground.author.id.equals(req.user._id)) {
+                next();
+            } else {
+                res.redirect("back");
+            }
+           }
+        });
+    } else {
+        res.redirect("back");
+    }
+}	
+
 //==============================================================
 //ROUTES
 //==============================================================
@@ -64,11 +83,42 @@ router.get("/:id", function(req, res){
         if(err){
             console.log(err);
         } else {
-            console.log(foundCampground)
+            console.log(foundCampground);
             //render show template with that campground
             res.render("campgrounds/show", {campground: foundCampground});
         }
     });
+});
+
+//EDIT
+router.get("/:id/edit", isCampgroundOwner, function(req, res) {
+	Campground.findById(req.params.id, function(err, foundCampground){
+		res.render("campgrounds/edit", {campground: foundCampground});
+	});
+});
+
+//UPDATE
+router.put("/:id", isCampgroundOwner, function(req, res) {
+	// find and update correct campground
+	Campground.findByIdAndUpdate(req.params.id, req.body.campground, function(err, updatedCampground){
+		if(err) {
+			res.redirect("/campgrounds");
+		} else {
+			res.redirect("/campgrounds/" + req.params.id);
+		}
+	});
+});
+
+//DESTROY
+router.delete("/:id", isCampgroundOwner, function(req, res) {
+	Campground.findByIdAndRemove(req.params.id, function(err){
+		if(err) {
+			res.redirect("/campgrounds");
+			console.log(err);
+		} else {
+			res.redirect("/campgrounds");
+		}
+	});
 });
 
 
