@@ -13,7 +13,6 @@ var Middleware = require("../middleware");
 //=================================================================
 
 //ADD NEW COMMENT
-//form hidden from user not logged in
 router.get("/new", Middleware.isLoggedIn, function(req, res) {
 	Campground.findById(req.params.id, function(err, campground) {
 		if(err) {
@@ -25,7 +24,6 @@ router.get("/new", Middleware.isLoggedIn, function(req, res) {
 });
 
 //SAVE NEW COMMENT
-//post route hidden from user not logged in
 router.post("/", Middleware.isLoggedIn, function(req, res) {
 	Campground.findById(req.params.id, function(err, campground) {
 		if (err) {
@@ -43,6 +41,7 @@ router.post("/", Middleware.isLoggedIn, function(req, res) {
 					comment.save();
 					campground.comments.push(comment);
 					campground.save();
+					req.flash("success", "Successfully added comment!");
 					res.redirect("/campgrounds/" + campground._id);
 				}
 			});
@@ -81,6 +80,7 @@ router.delete("/:comment_id", Middleware.isCommentOwner, function(req, res) {
 			console.log(err);
 			res.redirect("back");
 		} else {
+			req.flash("success", "Comment deleted");
 			res.redirect("/campgrounds/" + req.params.id);
 		}
 	})
