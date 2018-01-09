@@ -1,4 +1,3 @@
-<!DOCTYPE html>	
 <!DOCTYPE html>
 <html>
 <head>
@@ -15,6 +14,14 @@
 					<a class="navbar-brand" href="/">YelpCamp</a>
 				</div>
 				<div class="collapse navbar-collapse">
+			    <ul class="nav navbar-nav">
+			      <li class="navbar-item">
+			        <a class="navbar-link" href="/campgrounds">Our Campgrounds</a>
+			      </li>
+			      <li class="navbar-item">
+			        <a class="navbar-link" href="#">About</a>
+			      </li>
+			    </ul>
 					<ul class="nav navbar-nav navbar-right">
 						<!-- login signup and logout links dynamic based on login status -->
 						<% if(!currentUser) { %>
@@ -27,10 +34,10 @@
 					</ul>
 				</div>
 			</div>
-		</nav>
+	</nav>
 <!-- NAV BAR END -->
 
-<!-- FLASH -->
+<!-- FLASH BEGIN -->
 		<div class="container">
 			
 			<% if (error && error.length > 0) { %>
@@ -45,4 +52,4 @@
 				</div>
 			<% } %>
 		</div>
-
+<!-- FLASH END -->

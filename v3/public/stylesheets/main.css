@@ -1,3 +1,7 @@
+body {
+	background-color: #81897a;
+}
+
 .thumbnail img {
 	width: 100%;
 }
@@ -12,4 +16,8 @@
 
 .delete-form {
 	display: inline;
+}
+
+.lower-title {
+	color: white;
 }
