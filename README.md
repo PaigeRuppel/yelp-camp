@@ -5,7 +5,7 @@
 
 #### MEAN Tech Stack
 * This project twas my first experience using MongoDB, EJS, Angular, and Node
-* YelpCamp includes important concepts such as:  
+* YelpCamp employs the following:  
   * Authentication
   * Authorization
   * Database Associations
